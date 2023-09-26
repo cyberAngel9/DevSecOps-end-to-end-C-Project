@@ -1,4 +1,4 @@
-name: Build code, run unit tests, run SAST, SCA, DAST security scans for .Net/C#
+name: Build code, run unit tests, run SAST, SCA, DAST security scans for C#
 on: push
 
 jobs:
@@ -6,13 +6,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Run unit tests and SAST scan on the source code 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
       with:
-        dotnet-version: 5.x
-    - name: Restore dependencies and build
-      run: dotnet restore && dotnet build
+        node-version: 16
+        cache: npm
+    - run: npm install
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
@@ -25,14 +24,13 @@ jobs:
 
   security:
     runs-on: ubuntu-latest
+    needs: build
     name: Run the SCA scan on the source code
-    needs: build  # Specify the dependency on the 'build' job
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/dotnet@master
-        with:
-          ignore-failures: true
+        uses: snyk/actions/node@master
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
@@ -43,11 +41,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          ref: main
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.6.1
         with:
-          ref: main
           docker_name: 'owasp/zap2docker-stable'
-          target: 'http://example.com/'  # Update with your web application URL
+          target: 'http://example.com/'
           rules_file_name: '.zap/rules.tsv'
           cmd_options: '-a'
