@@ -1,4 +1,4 @@
-# Assignment for Creating an End to End DevSecOps Pipeline for .NET/C# project Modified by Angel AKA I0n1c.
+# Assignment for Creating an End to End DevSecOps Pipeline for .NET/C# project Modified by Angel.
 
 This DevSecOps project has helped me gain a comprehensive understanding of how to conduct scans using SAST, SCA, and DAST tools. Most importantly, it has taught me how to identify vulnerabilities, make improvements to the scans, and effectively communicate these findings to the deployment team. The entire process was facilitated using SonarCloud, Synk, and GitHub Actions, all configured with the necessary permissions and tokens. 
 
